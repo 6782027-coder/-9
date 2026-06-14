@@ -22,8 +22,4 @@ jobs:
             if (Test-Path "platform-tools\$f") { Copy-Item "platform-tools\$f" "assets\$f" }
           }
       - name: Build
-        run: pyinstaller bepikuach.spec --noconfirm --clean
-      - uses: actions/upload-artifact@v4
-        with:
-          name: BePikuach-Installer-Windows
-          path: dist\BePikuach-Installer.exe1
+        run:
