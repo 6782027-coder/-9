@@ -3,16 +3,20 @@ on:
   push:
     branches: ["main", "master"]
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      
       - name: Install dependencies
         run: pip install pyinstaller Pillow
+      
       - name: Get ADB
         run: |
           Invoke-WebRequest "https://dl.google.com/android/repository/platform-tools-latest-windows.zip" -OutFile pt.zip
@@ -21,5 +25,12 @@ jobs:
           foreach ($f in @("adb.exe","AdbWinApi.dll","AdbWinUsbApi.dll")) {
             if (Test-Path "platform-tools\$f") { Copy-Item "platform-tools\$f" "assets\$f" }
           }
+      
       - name: Build
-        run:
+        run: pyinstaller --onefile --windowed main.py
+      
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: Windows-EXE
+          path: dist/*.exe
